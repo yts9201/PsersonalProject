@@ -21,5 +21,5 @@ ProductsSchema.virtual('getDate').get(function(){
     }
 });
 
-ProductsSchema.plugin(autoIncrement.plugin, {model:'products', filed:'id', startAt:1});
+ProductsSchema.plugin(autoIncrement.plugin, {model:'products', field:'id', startAt:1});
 module.exports = mongoose.model('products', ProductsSchema);
