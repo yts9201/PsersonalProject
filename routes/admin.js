@@ -7,11 +7,6 @@ router.get('/products', function(req,res){
         res.render('admin/products', {products:products});
     });
 });
-router.get('/products', function(req,res){
-    ProductsModel.find(function(err, products){
-        res.render('admin/products', {products:products});
-    });
-});
 
 router.get('/products/write', function(req,res){
     res.render('admin/form');
