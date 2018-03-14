@@ -3,7 +3,10 @@ var Schema = mongoose.Schema;
 var autoIncrement = require('mongoose-auto-increment');
 
 var ProductsSchema = new Schema({
-    name : String,
+    name : {
+        type : String,
+        required:[true, '제목을 입력해주세요']
+    },
     price : Number,
     description : String,
     created_at : {
