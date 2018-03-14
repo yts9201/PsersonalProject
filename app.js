@@ -29,6 +29,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cookieParser());
 
+app.use('/uploads', express.static('uploads'));
+
 // Routing
 app.use('/admin', admin);
 app.use('/', home);

@@ -12,7 +12,8 @@ var ProductsSchema = new Schema({
     created_at : {
         type : Date,
         default : Date.now()
-    }
+    },
+    thumbnail : String
 });
 
 ProductsSchema.virtual('getDate').get(function(){
