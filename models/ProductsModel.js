@@ -13,7 +13,8 @@ var ProductsSchema = new Schema({
         type : Date,
         default : Date.now()
     },
-    thumbnail : String
+    thumbnail : String,
+    displayname : String
 });
 
 ProductsSchema.virtual('getDate').get(function(){

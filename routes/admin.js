@@ -7,6 +7,7 @@ var csrfProtection = csrf({cookie:true});
 var path = require('path');
 var uploadDir = path.join(__dirname, '../uploads');
 var fs = require('fs');
+var loginRequired = require('../libs/loginRequired');
 
 var multer = require('multer');
 var storage = multer.diskStorage({
@@ -25,15 +26,16 @@ router.get('/products', function(req,res){
     });
 });
 
-router.get('/products/write', csrfProtection, function(req,res){
+router.get('/products/write', loginRequired, csrfProtection, function(req,res){
     res.render('admin/form', {product:"", csrfToken:req.csrfToken()});
 });
-router.post('/products/write', upload.single('thumbnail'), csrfProtection, function(req,res){
+router.post('/products/write', loginRequired, upload.single('thumbnail'), csrfProtection, function(req,res){
     var product = new ProductsModel({
         name : req.body.name,
         price : req.body.price,
         description : req.body.description,
-        thumbnail: (req.file) ? req.file.filename : ""
+        thumbnail: (req.file) ? req.file.filename : "",
+        displayname : req.user.displayname
     });
     var validationError = product.validateSync();
     if(validationError){
@@ -53,12 +55,12 @@ router.get('/products/detail/:id' , function(req, res){
     });
 });
 
-router.get('/products/edit/:id', csrfProtection, function(req,res){
+router.get('/products/edit/:id', loginRequired, csrfProtection, function(req,res){
     ProductsModel.findOne({id:req.params.id}, function(err, product){
         res.render('admin/form', {product:product, csrfToken:req.csrfToken()});
     });
 });
-router.post('/products/edit/:id', upload.single('thumbnail'), csrfProtection, function(req,res){
+router.post('/products/edit/:id', loginRequired, upload.single('thumbnail'), csrfProtection, function(req,res){
     ProductsModel.findOne({id:req.params.id}, function(err, product){
         if(req.file){
             fs.unlinkSync(uploadDir + '/' + product.thumbnail);
@@ -68,7 +70,8 @@ router.post('/products/edit/:id', upload.single('thumbnail'), csrfProtection, fu
         name : req.body.name,
         price : req.body.price,
         description : req.body.description,
-        thumbnail : (req.file) ? req.file.filename : product.thumbnail
+        thumbnail : (req.file) ? req.file.filename : product.thumbnail,
+        displayname : req.user.displayname
     };
     ProductsModel.update({id:req.params.id}, {$set:query}, function(err){
         res.redirect('/admin/products/detail/'+req.params.id);
